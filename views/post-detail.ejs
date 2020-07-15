@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+            <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+            <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+            <style>
+            body{
+                      background-image: url('/images/slider-image2.jpg');
+                      background-repeat: no-repeat;
+                      background-size:cover;
+                   
+              }
+              #comments
+              {
+                background-color:#d1e4d0 ;
+                 border: 2px solid black;
+                color: black;
+              }
+              h3{
+                background-color:#d1e4d0;
+                 border: 2px solid black;
+                 margin-left: 5px;
+                   text-align: left;
+                    font-size: 20px;
+                    height:50px;
+                      width: 25%;
+                  transition: all 0.5s;
+                   cursor: pointer;
+                   margin-bottom: auto;
+                color: black;
+              }
+            h4{
+                         font-size: x-large;
+                         font-family: 'brush', Times, serif;
+                         color: white;
+
+              }
+              #one{
+                color: white;
+                display: inline-block;
+                  border-radius: 4px;
+                 border: none;
+                   text-align: center;
+                    font-size: 28px;
+                      padding: 20px;
+                    height:400px;
+                      width: 100%;
+                  transition: all 0.5s;
+                   cursor: pointer;
+                   margin: 5px;
+
+              }
+              #comment
+              {
+                color:black;
+                    height: 60px;
+                      width: 500px;
+                      display: inline-block;
+                  border-radius: 3px;
+                   border: 2px solid black;
+                   text-align: center;
+              }
+            
+      </style>
+            
+        </head>
+    <body>
+<div id="one">
+  <img src="/ss.jpg" alt="Smiley face" width="30%" height="50%">
+<h2><%= postDetail.title %></h2><h4><%= postDetail.description %><br><%= postDetail.by %><br><%= postDetail.url %></h4>
+<div id="one">
+   <h2><input type="text" placeholder="Write your comment here..."  id="comment" rows="3" cols="50" style="font-size:x-large; background-color:white; " >
+</h2>
+<input type="hidden" id="postId" value="<%= postId %>">
+<button class="button" style="color: black;" type="submit" value="Send" id="send"><span><b>SUBMIT</b> </span></button>
+</div></br>
+
+</div>
+<style>::placeholder {
+    color: black;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: red;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+   color: red;
+  }
+  .button {
+    border-color:black;
+	color:burlywood;
+	background-color:#d1e4d0;
+    border-radius: 5px;
+	font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    height: 50px;
+    width: 150px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+  </style>
+
+
+<h1 style="color: white; margin-left: 20px;"><u>COMMENTS:</u></h1>
+<div class="comments">
+    <% 
+    if (typeof comments != 'undefined' && comments != null) {
+            comments.forEach( function ( commentData ){
+                    %>
+                <h3> <%= commentData.comment %> </h3>
+                    <% });
+                } %>
+
+</div>
+</body>
+<script type="text/javascript">
+var socket = io();
+    $('#send').click(function(){
+        var comment = $('#comment').val();
+        var postId = $('#postId').val();
+        if(comment != ''){
+            var data = {'comment': comment,'postId': postId};
+        $('.comments').append("<h3>"+comment+"</h3>");
+        $('#comment').val('');
+        }
+        
+    socket.emit('comment',data);
+
+
+    });
+
+    socket.on('comment',function(data){
+        var postId = "<%= postId %>";
+        if(postId==data.postId){
+            $('.comments').append("<h3>"+data.comment+"</h3>");
+        }
+        });
+    
+
+</script>
+
+
+</html>
